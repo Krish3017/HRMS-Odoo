@@ -25,10 +25,16 @@ import {
   RadialBar,
   ScatterChart,
   Scatter,
-  ReferenceLine
+  ReferenceLine,
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis
 } from 'recharts';
 import { Download, FileSpreadsheet, FileText, TrendingUp, TrendingDown, Users, Calendar, DollarSign, Clock } from 'lucide-react';
 import { mockEmployees } from '@/data/mockData';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Comprehensive data sets
 const weeklyAttendanceData = [
@@ -50,12 +56,7 @@ const monthlyAttendanceData = [
   { month: 'Jan', present: 1350, absent: 65, leave: 35, attendanceRate: 93.0 },
 ];
 
-const leaveDistribution = [
-  { name: 'Annual', value: 45, color: 'hsl(217, 91%, 60%)', used: 120, total: 200 },
-  { name: 'Sick', value: 25, color: 'hsl(0, 84%, 60%)', used: 45, total: 100 },
-  { name: 'Personal', value: 20, color: 'hsl(45, 93%, 47%)', used: 35, total: 80 },
-  { name: 'Unpaid', value: 10, color: 'hsl(215, 16%, 47%)', used: 15, total: 50 },
-];
+// Leave distribution colors - will be set dynamically in component
 
 const payrollTrend = [
   { month: 'Aug', amount: 125000, employees: 45, avgSalary: 2778 },
@@ -107,15 +108,32 @@ const radialData = [
   { name: 'Satisfaction', value: 87, fill: 'hsl(217, 91%, 60%)' },
 ];
 
-const COLORS = {
-  present: 'hsl(142, 76%, 36%)',
-  absent: 'hsl(0, 84%, 60%)',
-  leave: 'hsl(217, 91%, 60%)',
-  late: 'hsl(45, 93%, 47%)',
-  primary: 'hsl(221, 83%, 53%)',
-};
-
 export default function Reports() {
+  const { theme } = useTheme();
+  
+  // Professional color scheme that adapts to theme
+  const getChartColors = () => {
+    const isDark = theme === 'dark';
+    return {
+      present: isDark ? '#4ade80' : '#22c55e',      // Green
+      absent: isDark ? '#f87171' : '#ef4444',       // Red
+      leave: isDark ? '#60a5fa' : '#3b82f6',        // Blue
+      late: isDark ? '#fbbf24' : '#f59e0b',         // Amber
+      primary: isDark ? '#818cf8' : '#6366f1',      // Indigo
+      secondary: isDark ? '#a78bfa' : '#8b5cf6',    // Purple
+      accent: isDark ? '#34d399' : '#10b981',       // Emerald
+      warning: isDark ? '#fb923c' : '#f97316',      // Orange
+    };
+  };
+
+  const COLORS = getChartColors();
+  const leaveDistribution = [
+    { name: 'Annual', value: 45, color: COLORS.leave, used: 120, total: 200 },
+    { name: 'Sick', value: 25, color: COLORS.absent, used: 45, total: 100 },
+    { name: 'Personal', value: 20, color: COLORS.late, used: 35, total: 80 },
+    { name: 'Unpaid', value: 10, color: COLORS.secondary, used: 15, total: 50 },
+  ];
+  
   const totalEmployees = mockEmployees.length;
   const avgAttendance = monthlyAttendanceData[monthlyAttendanceData.length - 1].attendanceRate;
   const totalPayroll = payrollTrend[payrollTrend.length - 1].amount;
@@ -266,8 +284,8 @@ export default function Reports() {
         {/* Attendance Tab */}
         <TabsContent value="attendance" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Weekly Attendance Overview */}
-            <Card>
+            {/* Custom Shape Bar Chart - Weekly Attendance */}
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">Weekly Attendance Overview</CardTitle>
                 <CardDescription>Daily attendance breakdown for the current week</CardDescription>
@@ -275,8 +293,8 @@ export default function Reports() {
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={weeklyAttendanceData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <BarChart data={weeklyAttendanceData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                       <XAxis 
                         dataKey="name" 
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
@@ -295,21 +313,77 @@ export default function Reports() {
                         }}
                       />
                       <Legend 
-                        wrapperStyle={{ paddingTop: '20px' }}
+                        wrapperStyle={{ paddingTop: '10px' }}
                         iconType="circle"
                       />
-                      <Bar dataKey="present" fill={COLORS.present} name="Present" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="absent" fill={COLORS.absent} name="Absent" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="leave" fill={COLORS.leave} name="Leave" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="late" fill={COLORS.late} name="Late" radius={[4, 4, 0, 0]} />
-                    </ComposedChart>
+                      <Bar 
+                        dataKey="present" 
+                        fill={COLORS.present} 
+                        name="Present"
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y + height} L${x},${y + height * 0.3} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.3} L${x + width},${y + height} Z`}
+                              fill={COLORS.present}
+                              opacity={0.9}
+                            />
+                          );
+                        }}
+                      />
+                      <Bar 
+                        dataKey="absent" 
+                        fill={COLORS.absent} 
+                        name="Absent"
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y + height} L${x},${y + height * 0.3} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.3} L${x + width},${y + height} Z`}
+                              fill={COLORS.absent}
+                              opacity={0.9}
+                            />
+                          );
+                        }}
+                      />
+                      <Bar 
+                        dataKey="leave" 
+                        fill={COLORS.leave} 
+                        name="Leave"
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y + height} L${x},${y + height * 0.3} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.3} L${x + width},${y + height} Z`}
+                              fill={COLORS.leave}
+                              opacity={0.9}
+                            />
+                          );
+                        }}
+                      />
+                      <Bar 
+                        dataKey="late" 
+                        fill={COLORS.late} 
+                        name="Late"
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y + height} L${x},${y + height * 0.3} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.3} L${x + width},${y + height} Z`}
+                              fill={COLORS.late}
+                              opacity={0.9}
+                            />
+                          );
+                        }}
+                      />
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Monthly Attendance Trend */}
-            <Card>
+            {/* Line Chart with X-axis Padding - Monthly Attendance Trend */}
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">Monthly Attendance Trend</CardTitle>
                 <CardDescription>6-month attendance rate progression</CardDescription>
@@ -317,18 +391,19 @@ export default function Reports() {
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={monthlyAttendanceData}>
+                    <LineChart data={monthlyAttendanceData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
                       <defs>
-                        <linearGradient id="colorAttendance" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={COLORS.present} stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor={COLORS.present} stopOpacity={0.1}/>
+                        <linearGradient id="colorAttendanceGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLORS.present} stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor={COLORS.present} stopOpacity={0}/>
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                       <XAxis 
                         dataKey="month" 
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                         stroke="hsl(var(--border))"
+                        padding={{ left: 30, right: 30 }}
                       />
                       <YAxis 
                         domain={[85, 95]}
@@ -349,18 +424,26 @@ export default function Reports() {
                         type="monotone" 
                         dataKey="attendanceRate" 
                         stroke={COLORS.present} 
+                        strokeWidth={2}
+                        fill="url(#colorAttendanceGrad)" 
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="attendanceRate" 
+                        stroke={COLORS.present} 
                         strokeWidth={3}
-                        fill="url(#colorAttendance)" 
+                        dot={{ fill: COLORS.present, r: 5, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                        activeDot={{ r: 7 }}
                       />
                       <ReferenceLine y={90} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" label={{ value: 'Target', position: 'right' }} />
-                    </AreaChart>
+                    </LineChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Attendance by Department */}
-            <Card>
+            {/* Custom Shape Bar Chart - Attendance by Department */}
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">Attendance by Department</CardTitle>
                 <CardDescription>Today's attendance breakdown by department</CardDescription>
@@ -368,8 +451,8 @@ export default function Reports() {
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={attendanceByDepartment} layout="vertical">
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <BarChart data={attendanceByDepartment} layout="vertical" margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                       <XAxis 
                         type="number"
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
@@ -390,18 +473,66 @@ export default function Reports() {
                           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                         }}
                       />
-                      <Legend />
-                      <Bar dataKey="present" stackId="a" fill={COLORS.present} name="Present" radius={[0, 4, 4, 0]} />
-                      <Bar dataKey="absent" stackId="a" fill={COLORS.absent} name="Absent" radius={[0, 4, 4, 0]} />
-                      <Bar dataKey="leave" stackId="a" fill={COLORS.leave} name="Leave" radius={[0, 4, 4, 0]} />
+                      <Legend 
+                        wrapperStyle={{ paddingTop: '10px' }}
+                        iconType="circle"
+                      />
+                      <Bar 
+                        dataKey="present" 
+                        stackId="a" 
+                        fill={COLORS.present} 
+                        name="Present"
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y} L${x + width * 0.8},${y} Q${x + width},${y} ${x + width},${y + height * 0.5} L${x + width},${y + height} L${x},${y + height} Z`}
+                              fill={COLORS.present}
+                              opacity={0.9}
+                            />
+                          );
+                        }}
+                      />
+                      <Bar 
+                        dataKey="absent" 
+                        stackId="a" 
+                        fill={COLORS.absent} 
+                        name="Absent"
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y} L${x + width * 0.8},${y} Q${x + width},${y} ${x + width},${y + height * 0.5} L${x + width},${y + height} L${x},${y + height} Z`}
+                              fill={COLORS.absent}
+                              opacity={0.9}
+                            />
+                          );
+                        }}
+                      />
+                      <Bar 
+                        dataKey="leave" 
+                        stackId="a" 
+                        fill={COLORS.leave} 
+                        name="Leave"
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y} L${x + width * 0.8},${y} Q${x + width},${y} ${x + width},${y + height * 0.5} L${x + width},${y + height} L${x},${y + height} Z`}
+                              fill={COLORS.leave}
+                              opacity={0.9}
+                            />
+                          );
+                        }}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Department Performance */}
-            <Card>
+            {/* Simple Radar Chart - Department Performance */}
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">Department Performance</CardTitle>
                 <CardDescription>Multi-metric performance comparison</CardDescription>
@@ -409,28 +540,37 @@ export default function Reports() {
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={departmentPerformance}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                      <XAxis 
+                    <RadarChart data={departmentPerformance}>
+                      <PolarGrid stroke="hsl(var(--border))" opacity={0.3} />
+                      <PolarAngleAxis 
                         dataKey="department" 
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
-                        stroke="hsl(var(--border))"
-                        angle={-45}
-                        textAnchor="end"
-                        height={80}
                       />
-                      <YAxis 
-                        yAxisId="left"
-                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                        stroke="hsl(var(--border))"
-                        label={{ value: 'Percentage', angle: -90, position: 'insideLeft', fill: 'hsl(var(--muted-foreground))' }}
+                      <PolarRadiusAxis 
+                        angle={90} 
+                        domain={[0, 100]}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
                       />
-                      <YAxis 
-                        yAxisId="right"
-                        orientation="right"
-                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                        stroke="hsl(var(--border))"
-                        label={{ value: 'Employees', angle: 90, position: 'insideRight', fill: 'hsl(var(--muted-foreground))' }}
+                      <Radar 
+                        name="Attendance" 
+                        dataKey="attendance" 
+                        stroke={COLORS.present} 
+                        fill={COLORS.present} 
+                        fillOpacity={0.6}
+                      />
+                      <Radar 
+                        name="Productivity" 
+                        dataKey="productivity" 
+                        stroke={COLORS.leave} 
+                        fill={COLORS.leave} 
+                        fillOpacity={0.6}
+                      />
+                      <Radar 
+                        name="Satisfaction" 
+                        dataKey="satisfaction" 
+                        stroke={COLORS.late} 
+                        fill={COLORS.late} 
+                        fillOpacity={0.6}
                       />
                       <Tooltip 
                         contentStyle={{ 
@@ -440,12 +580,11 @@ export default function Reports() {
                           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                         }}
                       />
-                      <Legend />
-                      <Bar yAxisId="right" dataKey="employees" fill={COLORS.primary} name="Employees" radius={[4, 4, 0, 0]} />
-                      <Line yAxisId="left" type="monotone" dataKey="attendance" stroke={COLORS.present} strokeWidth={2} name="Attendance %" />
-                      <Line yAxisId="left" type="monotone" dataKey="productivity" stroke={COLORS.leave} strokeWidth={2} name="Productivity %" />
-                      <Line yAxisId="left" type="monotone" dataKey="satisfaction" stroke={COLORS.late} strokeWidth={2} name="Satisfaction %" />
-                    </ComposedChart>
+                      <Legend 
+                        wrapperStyle={{ paddingTop: '10px' }}
+                        iconType="circle"
+                      />
+                    </RadarChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -510,35 +649,36 @@ export default function Reports() {
               </CardContent>
             </Card>
 
-            {/* Leave Trend */}
-            <Card>
+            {/* Line Chart with X-axis Padding - Leave Request Trend */}
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">Leave Request Trend</CardTitle>
-                <CardDescription>Monthly leave request statistics</CardDescription>
+                <CardDescription>Monthly leave request statistics with trend analysis</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={leaveTrendData}>
+                    <LineChart data={leaveTrendData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
                       <defs>
-                        <linearGradient id="colorApproved" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={COLORS.present} stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor={COLORS.present} stopOpacity={0.1}/>
+                        <linearGradient id="colorApprovedGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLORS.present} stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor={COLORS.present} stopOpacity={0}/>
                         </linearGradient>
-                        <linearGradient id="colorRejected" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={COLORS.absent} stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor={COLORS.absent} stopOpacity={0.1}/>
+                        <linearGradient id="colorRejectedGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLORS.absent} stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor={COLORS.absent} stopOpacity={0}/>
                         </linearGradient>
-                        <linearGradient id="colorPending" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor={COLORS.late} stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor={COLORS.late} stopOpacity={0.1}/>
+                        <linearGradient id="colorPendingGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLORS.late} stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor={COLORS.late} stopOpacity={0}/>
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                       <XAxis 
                         dataKey="month" 
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                         stroke="hsl(var(--border))"
+                        padding={{ left: 30, right: 30 }}
                       />
                       <YAxis 
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
@@ -552,32 +692,59 @@ export default function Reports() {
                           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                         }}
                       />
-                      <Legend />
+                      <Legend 
+                        wrapperStyle={{ paddingTop: '10px' }}
+                        iconType="circle"
+                      />
                       <Area 
                         type="monotone" 
                         dataKey="approved" 
-                        stackId="1" 
                         stroke={COLORS.present} 
-                        fill="url(#colorApproved)" 
+                        fill="url(#colorApprovedGrad)" 
+                        name="Approved"
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="approved" 
+                        stroke={COLORS.present} 
+                        strokeWidth={3}
+                        dot={{ fill: COLORS.present, r: 5, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                        activeDot={{ r: 7 }}
                         name="Approved"
                       />
                       <Area 
                         type="monotone" 
                         dataKey="rejected" 
-                        stackId="1" 
                         stroke={COLORS.absent} 
-                        fill="url(#colorRejected)" 
+                        fill="url(#colorRejectedGrad)" 
+                        name="Rejected"
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="rejected" 
+                        stroke={COLORS.absent} 
+                        strokeWidth={3}
+                        dot={{ fill: COLORS.absent, r: 5, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                        activeDot={{ r: 7 }}
                         name="Rejected"
                       />
                       <Area 
                         type="monotone" 
                         dataKey="pending" 
-                        stackId="1" 
                         stroke={COLORS.late} 
-                        fill="url(#colorPending)" 
+                        fill="url(#colorPendingGrad)" 
                         name="Pending"
                       />
-                    </AreaChart>
+                      <Line 
+                        type="monotone" 
+                        dataKey="pending" 
+                        stroke={COLORS.late} 
+                        strokeWidth={3}
+                        dot={{ fill: COLORS.late, r: 5, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                        activeDot={{ r: 7 }}
+                        name="Pending"
+                      />
+                    </LineChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -585,24 +752,35 @@ export default function Reports() {
           </div>
         </TabsContent>
 
-        {/* Payroll Tab */}
+        {/* Payroll Tab - Line Bar Area Composed Chart */}
         <TabsContent value="payroll" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Payroll Trend */}
-            <Card className="lg:col-span-2">
+            {/* Payroll Trend - Line Bar Area Composed Chart */}
+            <Card className="lg:col-span-2 shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">Payroll Trend Analysis</CardTitle>
-                <CardDescription>6-month payroll and average salary trends</CardDescription>
+                <CardDescription>6-month payroll and average salary trends with comprehensive metrics</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-80">
+                <div className="h-96">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={payrollTrend}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <ComposedChart data={payrollTrend} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
+                      <defs>
+                        <linearGradient id="colorPayrollGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0.1}/>
+                        </linearGradient>
+                        <linearGradient id="colorSalaryGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLORS.leave} stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor={COLORS.leave} stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                       <XAxis 
                         dataKey="month" 
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                         stroke="hsl(var(--border))"
+                        padding={{ left: 20, right: 20 }}
                       />
                       <YAxis 
                         yAxisId="left"
@@ -631,10 +809,63 @@ export default function Reports() {
                           return [value, name];
                         }}
                       />
-                      <Legend />
-                      <Bar yAxisId="left" dataKey="amount" fill={COLORS.primary} name="Total Payroll" radius={[4, 4, 0, 0]} />
-                      <Line yAxisId="right" type="monotone" dataKey="avgSalary" stroke={COLORS.leave} strokeWidth={3} name="Average Salary" dot={{ fill: COLORS.leave, r: 4 }} />
-                      <Line yAxisId="left" type="monotone" dataKey="employees" stroke={COLORS.late} strokeWidth={2} strokeDasharray="5 5" name="Employees" dot={{ fill: COLORS.late, r: 3 }} />
+                      <Legend 
+                        wrapperStyle={{ paddingTop: '10px' }}
+                        iconType="circle"
+                      />
+                      <Area 
+                        yAxisId="left"
+                        type="monotone" 
+                        dataKey="amount" 
+                        stroke={COLORS.primary} 
+                        fill="url(#colorPayrollGrad)" 
+                        name="Payroll Trend"
+                      />
+                      <Bar 
+                        yAxisId="left" 
+                        dataKey="amount" 
+                        fill={COLORS.primary} 
+                        name="Total Payroll" 
+                        opacity={0.3}
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y + height} L${x},${y + height * 0.2} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.2} L${x + width},${y + height} Z`}
+                              fill={COLORS.primary}
+                              opacity={0.3}
+                            />
+                          );
+                        }}
+                      />
+                      <Area 
+                        yAxisId="right"
+                        type="monotone" 
+                        dataKey="avgSalary" 
+                        stroke={COLORS.leave} 
+                        fill="url(#colorSalaryGrad)" 
+                        name="Salary Trend"
+                      />
+                      <Line 
+                        yAxisId="right" 
+                        type="monotone" 
+                        dataKey="avgSalary" 
+                        stroke={COLORS.leave} 
+                        strokeWidth={3} 
+                        name="Average Salary" 
+                        dot={{ fill: COLORS.leave, r: 5, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                        activeDot={{ r: 7 }}
+                      />
+                      <Line 
+                        yAxisId="left" 
+                        type="monotone" 
+                        dataKey="employees" 
+                        stroke={COLORS.late} 
+                        strokeWidth={2} 
+                        strokeDasharray="5 5" 
+                        name="Employees" 
+                        dot={{ fill: COLORS.late, r: 4, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                      />
                     </ComposedChart>
                   </ResponsiveContainer>
                 </div>
@@ -646,8 +877,8 @@ export default function Reports() {
         {/* Analytics Tab */}
         <TabsContent value="analytics" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Employee Tenure Distribution */}
-            <Card>
+            {/* Custom Shape Bar Chart - Employee Tenure Distribution */}
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">Employee Tenure Distribution</CardTitle>
                 <CardDescription>Years of service breakdown</CardDescription>
@@ -655,8 +886,8 @@ export default function Reports() {
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={employeeTenureData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <BarChart data={employeeTenureData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                       <XAxis 
                         dataKey="range" 
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
@@ -678,42 +909,58 @@ export default function Reports() {
                           'Count'
                         ]}
                       />
-                      <Bar dataKey="count" fill={COLORS.primary} radius={[4, 4, 0, 0]} />
+                      <Bar 
+                        dataKey="count" 
+                        fill={COLORS.primary}
+                        shape={(props: any) => {
+                          const { x, y, width, height } = props;
+                          return (
+                            <path
+                              d={`M${x},${y + height} L${x},${y + height * 0.2} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.2} L${x + width},${y + height} Z`}
+                              fill={COLORS.primary}
+                              opacity={0.9}
+                            />
+                          );
+                        }}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Performance Metrics */}
-            <Card>
+            {/* Simple Radar Chart - Overall Performance Metrics */}
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold">Overall Performance Metrics</CardTitle>
-                <CardDescription>Key performance indicators</CardDescription>
+                <CardDescription>Key performance indicators across departments</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <RadialBarChart cx="50%" cy="50%" innerRadius="40%" outerRadius="90%" data={radialData} startAngle={90} endAngle={-270}>
-                      <RadialBar 
-                        dataKey="value" 
-                        cornerRadius={10}
-                      >
-                        {radialData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.fill} />
-                        ))}
-                      </RadialBar>
-                      <Legend 
-                        iconSize={12}
-                        layout="vertical"
-                        verticalAlign="middle"
-                        align="right"
-                        wrapperStyle={{ paddingLeft: '20px' }}
-                        payload={radialData.map((entry) => ({
-                          value: entry.name,
-                          type: 'circle',
-                          color: entry.fill,
-                        }))}
+                    <RadarChart data={[
+                      { subject: 'Attendance', A: 93, fullMark: 100 },
+                      { subject: 'Productivity', A: 88, fullMark: 100 },
+                      { subject: 'Satisfaction', A: 87, fullMark: 100 },
+                      { subject: 'Efficiency', A: 90, fullMark: 100 },
+                      { subject: 'Growth', A: 85, fullMark: 100 },
+                    ]}>
+                      <PolarGrid stroke="hsl(var(--border))" opacity={0.3} />
+                      <PolarAngleAxis 
+                        dataKey="subject" 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                      />
+                      <PolarRadiusAxis 
+                        angle={90} 
+                        domain={[0, 100]}
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                      />
+                      <Radar 
+                        name="Overall" 
+                        dataKey="A" 
+                        stroke={COLORS.primary} 
+                        fill={COLORS.primary} 
+                        fillOpacity={0.6}
                       />
                       <Tooltip 
                         contentStyle={{ 
@@ -724,7 +971,11 @@ export default function Reports() {
                         }}
                         formatter={(value: number) => [`${value}%`, 'Score']}
                       />
-                    </RadialBarChart>
+                      <Legend 
+                        wrapperStyle={{ paddingTop: '10px' }}
+                        iconType="circle"
+                      />
+                    </RadarChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>

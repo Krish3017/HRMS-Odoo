@@ -23,7 +23,13 @@ import {
   Line,
   AreaChart,
   Area,
-  Legend
+  Legend,
+  ComposedChart,
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis
 } from 'recharts';
 
 export default function Dashboard() {
@@ -34,22 +40,48 @@ export default function Dashboard() {
   const pendingLeaves = mockLeaveRequests.filter(l => l.status === 'pending');
   const todayAttendance = mockAttendance.find(a => a.employeeId === user?.employeeId);
 
+  // Professional color scheme that works in both light and dark modes
+  const getChartColors = () => {
+    const isDark = theme === 'dark';
+    return {
+      present: isDark ? '#4ade80' : '#22c55e',      // Green
+      absent: isDark ? '#f87171' : '#ef4444',       // Red
+      leave: isDark ? '#60a5fa' : '#3b82f6',        // Blue
+      late: isDark ? '#fbbf24' : '#f59e0b',         // Amber
+      primary: isDark ? '#818cf8' : '#6366f1',      // Indigo
+      secondary: isDark ? '#a78bfa' : '#8b5cf6',    // Purple
+      accent: isDark ? '#34d399' : '#10b981',       // Emerald
+      warning: isDark ? '#fb923c' : '#f97316',      // Orange
+    };
+  };
+
+  const colors = getChartColors();
+
   // Chart data for HR/Admin
   const weeklyAttendanceData = [
-    { name: 'Mon', present: 45, absent: 3, leave: 2 },
-    { name: 'Tue', present: 42, absent: 5, leave: 3 },
-    { name: 'Wed', present: 48, absent: 1, leave: 1 },
-    { name: 'Thu', present: 44, absent: 4, leave: 2 },
-    { name: 'Fri', present: 40, absent: 6, leave: 4 },
-    { name: 'Sat', present: 20, absent: 1, leave: 0 },
-    { name: 'Sun', present: 15, absent: 0, leave: 0 },
+    { name: 'Mon', present: 45, absent: 3, leave: 2, late: 2 },
+    { name: 'Tue', present: 42, absent: 5, leave: 3, late: 1 },
+    { name: 'Wed', present: 48, absent: 1, leave: 1, late: 0 },
+    { name: 'Thu', present: 44, absent: 4, leave: 2, late: 3 },
+    { name: 'Fri', present: 40, absent: 6, leave: 4, late: 2 },
+    { name: 'Sat', present: 20, absent: 1, leave: 0, late: 0 },
+    { name: 'Sun', present: 15, absent: 0, leave: 0, late: 0 },
   ];
 
   const leaveTypeDistribution = [
-    { name: 'Annual', value: 45, color: 'hsl(217, 91%, 60%)' },
-    { name: 'Sick', value: 25, color: 'hsl(0, 84%, 60%)' },
-    { name: 'Personal', value: 20, color: 'hsl(45, 93%, 47%)' },
-    { name: 'Unpaid', value: 10, color: 'hsl(215, 16%, 47%)' },
+    { name: 'Annual', value: 45, color: colors.leave },
+    { name: 'Sick', value: 25, color: colors.absent },
+    { name: 'Personal', value: 20, color: colors.late },
+    { name: 'Unpaid', value: 10, color: colors.secondary },
+  ];
+
+  // Department performance for radar chart
+  const departmentPerformanceData = [
+    { subject: 'Attendance', Engineering: 94, Sales: 89, Marketing: 92, Finance: 96, HR: 93, Operations: 90 },
+    { subject: 'Productivity', Engineering: 92, Sales: 95, Marketing: 88, Finance: 90, HR: 85, Operations: 87 },
+    { subject: 'Satisfaction', Engineering: 88, Sales: 85, Marketing: 90, Finance: 87, HR: 92, Operations: 83 },
+    { subject: 'Efficiency', Engineering: 90, Sales: 93, Marketing: 86, Finance: 94, HR: 88, Operations: 85 },
+    { subject: 'Growth', Engineering: 87, Sales: 91, Marketing: 89, Finance: 88, HR: 90, Operations: 82 },
   ];
 
   // Employee distribution by department
@@ -66,20 +98,20 @@ export default function Dashboard() {
 
   // Attendance status breakdown
   const attendanceStatusData = [
-    { name: 'Present', value: 6, color: 'hsl(142, 76%, 36%)' },
-    { name: 'Absent', value: 1, color: 'hsl(0, 84%, 60%)' },
-    { name: 'Leave', value: 1, color: 'hsl(217, 91%, 60%)' },
-    { name: 'Half Day', value: 0, color: 'hsl(45, 93%, 47%)' },
+    { name: 'Present', value: 6, color: colors.present },
+    { name: 'Absent', value: 1, color: colors.absent },
+    { name: 'Leave', value: 1, color: colors.leave },
+    { name: 'Half Day', value: 0, color: colors.late },
   ];
 
-  // Monthly attendance trend
+  // Monthly attendance trend with X-axis padding
   const monthlyAttendanceData = [
-    { month: 'Aug', present: 1200, absent: 80, leave: 50 },
-    { month: 'Sep', present: 1250, absent: 75, leave: 45 },
-    { month: 'Oct', present: 1300, absent: 70, leave: 40 },
-    { month: 'Nov', present: 1280, absent: 85, leave: 55 },
-    { month: 'Dec', present: 1100, absent: 100, leave: 60 },
-    { month: 'Jan', present: 1350, absent: 65, leave: 35 },
+    { month: 'Aug', present: 1200, absent: 80, leave: 50, rate: 89.5 },
+    { month: 'Sep', present: 1250, absent: 75, leave: 45, rate: 91.2 },
+    { month: 'Oct', present: 1300, absent: 70, leave: 40, rate: 92.1 },
+    { month: 'Nov', present: 1280, absent: 85, leave: 55, rate: 90.1 },
+    { month: 'Dec', present: 1100, absent: 100, leave: 60, rate: 87.3 },
+    { month: 'Jan', present: 1350, absent: 65, leave: 35, rate: 93.0 },
   ];
 
   // Employee attendance trend (for employees)
@@ -226,37 +258,98 @@ export default function Dashboard() {
       {/* Charts Section */}
       {isHROrAdmin ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Weekly Attendance Chart */}
-          <Card>
+          {/* Custom Shape Bar Chart - Weekly Attendance */}
+          <Card className="shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base font-medium">Weekly Attendance Overview</CardTitle>
+              <CardTitle className="text-base font-semibold">Weekly Attendance Overview</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-72">
+              <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={weeklyAttendanceData}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                  <BarChart data={weeklyAttendanceData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                     <XAxis 
                       dataKey="name" 
-                      className="text-xs"
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      stroke="hsl(var(--border))"
                     />
                     <YAxis 
-                      className="text-xs"
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      stroke="hsl(var(--border))"
                     />
                     <Tooltip 
                       contentStyle={{ 
                         backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '0.375rem',
+                        borderRadius: '0.5rem',
                         color: 'hsl(var(--foreground))',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                       }}
                     />
-                    <Legend />
-                    <Bar dataKey="present" fill="hsl(142, 76%, 36%)" name="Present" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="absent" fill="hsl(0, 84%, 60%)" name="Absent" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="leave" fill="hsl(217, 91%, 60%)" name="Leave" radius={[4, 4, 0, 0]} />
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '10px' }}
+                      iconType="circle"
+                    />
+                    <Bar 
+                      dataKey="present" 
+                      fill={colors.present} 
+                      name="Present" 
+                      shape={(props: any) => {
+                        const { x, y, width, height } = props;
+                        return (
+                          <path
+                            d={`M${x},${y + height} L${x},${y + height * 0.3} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.3} L${x + width},${y + height} Z`}
+                            fill={colors.present}
+                            opacity={0.9}
+                          />
+                        );
+                      }}
+                    />
+                    <Bar 
+                      dataKey="absent" 
+                      fill={colors.absent} 
+                      name="Absent"
+                      shape={(props: any) => {
+                        const { x, y, width, height } = props;
+                        return (
+                          <path
+                            d={`M${x},${y + height} L${x},${y + height * 0.3} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.3} L${x + width},${y + height} Z`}
+                            fill={colors.absent}
+                            opacity={0.9}
+                          />
+                        );
+                      }}
+                    />
+                    <Bar 
+                      dataKey="leave" 
+                      fill={colors.leave} 
+                      name="Leave"
+                      shape={(props: any) => {
+                        const { x, y, width, height } = props;
+                        return (
+                          <path
+                            d={`M${x},${y + height} L${x},${y + height * 0.3} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.3} L${x + width},${y + height} Z`}
+                            fill={colors.leave}
+                            opacity={0.9}
+                          />
+                        );
+                      }}
+                    />
+                    <Bar 
+                      dataKey="late" 
+                      fill={colors.late} 
+                      name="Late"
+                      shape={(props: any) => {
+                        const { x, y, width, height } = props;
+                        return (
+                          <path
+                            d={`M${x},${y + height} L${x},${y + height * 0.3} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.3} L${x + width},${y + height} Z`}
+                            fill={colors.late}
+                            opacity={0.9}
+                          />
+                        );
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -311,161 +404,189 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Employee Distribution by Department */}
-          <Card>
+          {/* Simple Radar Chart - Department Performance */}
+          <Card className="shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base font-medium">Employees by Department</CardTitle>
+              <CardTitle className="text-base font-semibold">Department Performance</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-72">
+              <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={departmentChartData} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
-                    <XAxis 
-                      type="number"
-                      className="text-xs"
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                  <RadarChart data={departmentPerformanceData}>
+                    <PolarGrid stroke="hsl(var(--border))" opacity={0.3} />
+                    <PolarAngleAxis 
+                      dataKey="subject" 
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                     />
-                    <YAxis 
-                      dataKey="name" 
-                      type="category"
-                      className="text-xs"
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                      width={100}
+                    <PolarRadiusAxis 
+                      angle={90} 
+                      domain={[0, 100]}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                    />
+                    <Radar 
+                      name="Engineering" 
+                      dataKey="Engineering" 
+                      stroke={colors.primary} 
+                      fill={colors.primary} 
+                      fillOpacity={0.6}
+                    />
+                    <Radar 
+                      name="Sales" 
+                      dataKey="Sales" 
+                      stroke={colors.accent} 
+                      fill={colors.accent} 
+                      fillOpacity={0.6}
+                    />
+                    <Radar 
+                      name="Marketing" 
+                      dataKey="Marketing" 
+                      stroke={colors.leave} 
+                      fill={colors.leave} 
+                      fillOpacity={0.6}
                     />
                     <Tooltip 
                       contentStyle={{ 
                         backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '0.375rem',
+                        borderRadius: '0.5rem',
                         color: 'hsl(var(--foreground))',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                       }}
                     />
-                    <Bar dataKey="employees" fill="hsl(221, 83%, 53%)" radius={[0, 4, 4, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Attendance Status Breakdown */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base font-medium">Today's Attendance Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-72 flex items-center justify-center">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={attendanceStatusData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={100}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {attendanceStatusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '0.375rem',
-                        color: 'hsl(var(--foreground))',
-                      }}
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '10px' }}
+                      iconType="circle"
                     />
-                  </PieChart>
+                  </RadarChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
         </div>
       ) : (
-        /* Employee Charts */
+        /* Employee Charts - Line Chart with X-axis Padding */
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base font-medium">My Weekly Hours</CardTitle>
+              <CardTitle className="text-base font-semibold">My Weekly Hours</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-72">
+              <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={myAttendanceTrend}>
+                  <LineChart data={myAttendanceTrend} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
                     <defs>
-                      <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(221, 83%, 53%)" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="hsl(221, 83%, 53%)" stopOpacity={0}/>
+                      <linearGradient id="colorHoursGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={colors.primary} stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor={colors.primary} stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                     <XAxis 
                       dataKey="week" 
-                      className="text-xs"
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      stroke="hsl(var(--border))"
+                      padding={{ left: 30, right: 30 }}
                     />
                     <YAxis 
-                      className="text-xs"
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      stroke="hsl(var(--border))"
+                      domain={[35, 45]}
                     />
                     <Tooltip 
                       contentStyle={{ 
                         backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '0.375rem',
+                        borderRadius: '0.5rem',
                         color: 'hsl(var(--foreground))',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                       }}
                     />
                     <Area 
                       type="monotone" 
                       dataKey="hours" 
-                      stroke="hsl(221, 83%, 53%)" 
-                      fillOpacity={1} 
-                      fill="url(#colorHours)" 
+                      stroke={colors.primary} 
+                      strokeWidth={2}
+                      fill="url(#colorHoursGrad)"
                     />
-                  </AreaChart>
+                    <Line 
+                      type="monotone" 
+                      dataKey="hours" 
+                      stroke={colors.primary} 
+                      strokeWidth={3}
+                      dot={{ fill: colors.primary, r: 5, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                      activeDot={{ r: 7 }}
+                    />
+                  </LineChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base font-medium">Leave Balance</CardTitle>
+              <CardTitle className="text-base font-semibold">Leave Balance</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-72">
+              <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={[
                     { name: 'Annual', used: 5, remaining: 15 },
                     { name: 'Sick', used: 2, remaining: 8 },
                     { name: 'Personal', used: 1, remaining: 4 },
-                  ]}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                  ]} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                     <XAxis 
                       dataKey="name" 
-                      className="text-xs"
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      stroke="hsl(var(--border))"
                     />
                     <YAxis 
-                      className="text-xs"
-                      tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      stroke="hsl(var(--border))"
                     />
                     <Tooltip 
                       contentStyle={{ 
                         backgroundColor: 'hsl(var(--card))',
                         border: '1px solid hsl(var(--border))',
-                        borderRadius: '0.375rem',
+                        borderRadius: '0.5rem',
                         color: 'hsl(var(--foreground))',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                       }}
                     />
-                    <Legend />
-                    <Bar dataKey="used" fill="hsl(0, 84%, 60%)" name="Used" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="remaining" fill="hsl(142, 76%, 36%)" name="Remaining" radius={[4, 4, 0, 0]} />
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '10px' }}
+                      iconType="circle"
+                    />
+                    <Bar 
+                      dataKey="used" 
+                      fill={colors.absent} 
+                      name="Used" 
+                      shape={(props: any) => {
+                        const { x, y, width, height } = props;
+                        return (
+                          <path
+                            d={`M${x},${y + height} L${x},${y + height * 0.2} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.2} L${x + width},${y + height} Z`}
+                            fill={colors.absent}
+                            opacity={0.9}
+                          />
+                        );
+                      }}
+                    />
+                    <Bar 
+                      dataKey="remaining" 
+                      fill={colors.present} 
+                      name="Remaining"
+                      shape={(props: any) => {
+                        const { x, y, width, height } = props;
+                        return (
+                          <path
+                            d={`M${x},${y + height} L${x},${y + height * 0.2} Q${x},${y} ${x + width * 0.5},${y} L${x + width * 0.5},${y} Q${x + width},${y} ${x + width},${y + height * 0.2} L${x + width},${y + height} Z`}
+                            fill={colors.present}
+                            opacity={0.9}
+                          />
+                        );
+                      }}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -474,74 +595,103 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Monthly Attendance Trend - Full Width for HR/Admin */}
+      {/* Line Bar Area Composed Chart - Monthly Attendance Trend with X-axis Padding */}
       {isHROrAdmin && (
-        <Card className="mb-6">
+        <Card className="mb-6 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-base font-medium">Monthly Attendance Trend (Last 6 Months)</CardTitle>
+            <CardTitle className="text-base font-semibold">Monthly Attendance Analysis (Last 6 Months)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-80">
+            <div className="h-96">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={monthlyAttendanceData}>
+                <ComposedChart data={monthlyAttendanceData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
                   <defs>
-                    <linearGradient id="colorPresent" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(142, 76%, 36%)" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(142, 76%, 36%)" stopOpacity={0}/>
+                    <linearGradient id="colorPresentGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={colors.present} stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor={colors.present} stopOpacity={0.1}/>
                     </linearGradient>
-                    <linearGradient id="colorAbsent" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(0, 84%, 60%)" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(0, 84%, 60%)" stopOpacity={0}/>
+                    <linearGradient id="colorAbsentGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={colors.absent} stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor={colors.absent} stopOpacity={0.1}/>
                     </linearGradient>
-                    <linearGradient id="colorLeave" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0}/>
+                    <linearGradient id="colorLeaveGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={colors.leave} stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor={colors.leave} stopOpacity={0.1}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                   <XAxis 
                     dataKey="month" 
-                    className="text-xs"
-                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--border))"
+                    padding={{ left: 20, right: 20 }}
                   />
                   <YAxis 
-                    className="text-xs"
-                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                    yAxisId="left"
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--border))"
+                    label={{ value: 'Count', angle: -90, position: 'insideLeft', fill: 'hsl(var(--muted-foreground))' }}
+                  />
+                  <YAxis 
+                    yAxisId="right"
+                    orientation="right"
+                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--border))"
+                    domain={[85, 95]}
+                    label={{ value: 'Rate (%)', angle: 90, position: 'insideRight', fill: 'hsl(var(--muted-foreground))' }}
                   />
                   <Tooltip 
                     contentStyle={{ 
                       backgroundColor: 'hsl(var(--card))',
                       border: '1px solid hsl(var(--border))',
-                      borderRadius: '0.375rem',
+                      borderRadius: '0.5rem',
                       color: 'hsl(var(--foreground))',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                     }}
                   />
-                  <Legend />
+                  <Legend 
+                    wrapperStyle={{ paddingTop: '10px' }}
+                    iconType="circle"
+                  />
                   <Area 
+                    yAxisId="left"
                     type="monotone" 
                     dataKey="present" 
                     stackId="1" 
-                    stroke="hsl(142, 76%, 36%)" 
-                    fill="url(#colorPresent)" 
+                    stroke={colors.present} 
+                    fill="url(#colorPresentGrad)" 
                     name="Present"
                   />
                   <Area 
+                    yAxisId="left"
                     type="monotone" 
                     dataKey="absent" 
                     stackId="1" 
-                    stroke="hsl(0, 84%, 60%)" 
-                    fill="url(#colorAbsent)" 
+                    stroke={colors.absent} 
+                    fill="url(#colorAbsentGrad)" 
                     name="Absent"
                   />
                   <Area 
+                    yAxisId="left"
                     type="monotone" 
                     dataKey="leave" 
                     stackId="1" 
-                    stroke="hsl(217, 91%, 60%)" 
-                    fill="url(#colorLeave)" 
+                    stroke={colors.leave} 
+                    fill="url(#colorLeaveGrad)" 
                     name="Leave"
                   />
-                </AreaChart>
+                  <Bar yAxisId="left" dataKey="present" fill={colors.present} name="Present Count" opacity={0.3} />
+                  <Line 
+                    yAxisId="right"
+                    type="monotone" 
+                    dataKey="rate" 
+                    stroke={colors.primary} 
+                    strokeWidth={3}
+                    dot={{ fill: colors.primary, r: 5, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
+                    activeDot={{ r: 7 }}
+                    name="Attendance Rate %"
+                  />
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
