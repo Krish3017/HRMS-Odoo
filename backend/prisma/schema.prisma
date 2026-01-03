@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  employee
+  hr
+  admin
+}
+
+enum AttendanceStatus {
+  present
+  absent
+  half_day
+  leave
+}
+
+enum LeaveType {
+  annual
+  sick
+  personal
+  unpaid
+}
+
+enum LeaveStatus {
+  pending
+  approved
+  rejected
+}
+
+enum PayrollStatus {
+  draft
+  processed
+  paid
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  employeeId  String   @unique
+  firstName   String
+  lastName    String
+  role        UserRole @default(employee)
+  department  String
+  position    String
+  avatar      String?
+  joinDate    DateTime @default(now())
+  phone       String?
+  address     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  attendanceRecords AttendanceRecord[]
+  leaveRequests     LeaveRequest[]
+  payrollRecords    PayrollRecord[]
+  reviewedLeaves    LeaveRequest[] @relation("ReviewedBy")
+
+  @@map("users")
+}
+
+model AttendanceRecord {
+  id           String            @id @default(uuid())
+  employeeId   String
+  employee     User              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  date         DateTime
+  checkIn      String?
+  checkOut     String?
+  status       AttendanceStatus
+  workHours    Float?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([employeeId, date])
+  @@map("attendance_records")
+  @@index([employeeId])
+  @@index([date])
+}
+
+model LeaveRequest {
+  id          String      @id @default(uuid())
+  employeeId  String
+  employee    User        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType   LeaveType
+  startDate   DateTime
+  endDate     DateTime
+  days        Int
+  reason      String
+  status      LeaveStatus @default(pending)
+  appliedOn   DateTime    @default(now())
+  reviewedBy  String?
+  reviewer    User?       @relation("ReviewedBy", fields: [reviewedBy], references: [id])
+  reviewedOn  DateTime?
+  comments    String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("leave_requests")
+  @@index([employeeId])
+  @@index([status])
+}
+
+model LeaveBalance {
+  id          String   @id @default(uuid())
+  employeeId String   @unique
+  employee   User     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  annual     Int      @default(20)
+  sick       Int      @default(10)
+  personal   Int      @default(5)
+  usedAnnual Int      @default(0)
+  usedSick   Int      @default(0)
+  usedPersonal Int    @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("leave_balances")
+}
+
+model PayrollRecord {
+  id          String        @id @default(uuid())
+  employeeId  String
+  employee    User          @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  month       String
+  year        Int
+  basicSalary Float
+  allowances  Float
+  deductions  Float
+  netSalary   Float
+  status      PayrollStatus @default(draft)
+  paidOn      DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([employeeId, month, year], name: "employeeId_month_year")
+  @@map("payroll_records")
+  @@index([employeeId])
+  @@index([year, month])
+}
+
