@@ -1,0 +1,30 @@
+{
+  "name": "dayflow-hr-suite",
+  "version": "1.0.0",
+  "description": "Dayflow HR Suite - Full Stack HR Management System",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd HRMS-Odoo && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd HRMS-Odoo && npm run build",
+    "install:all": "npm install && cd backend && npm install && cd ../HRMS-Odoo && npm install",
+    "db:generate": "cd backend && npm run db:generate",
+    "db:push": "cd backend && npm run db:push",
+    "db:seed": "cd backend && npm run db:seed",
+    "db:studio": "cd backend && npm run db:studio"
+  },
+  "keywords": [
+    "hr",
+    "human-resources",
+    "management-system"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
+
