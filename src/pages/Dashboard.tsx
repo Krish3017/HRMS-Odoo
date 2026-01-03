@@ -1,17 +1,27 @@
 import { useAuth } from '@/contexts/AuthContext';
+<<<<<<< HEAD
 import { useTheme } from '@/contexts/ThemeContext';
+=======
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
 import { ERPLayout } from '@/components/layout/ERPLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatCard } from '@/components/common/StatCard';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { mockDashboardStats, mockAttendance, mockLeaveRequests } from '@/data/mockData';
+<<<<<<< HEAD
 import { Users, UserCheck, CalendarDays, ClipboardList, Clock, LogIn, LogOut, FileText, Moon, Sun } from 'lucide-react';
+=======
+import { Users, UserCheck, CalendarDays, ClipboardList, Clock, LogIn, LogOut, FileText } from 'lucide-react';
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Dashboard() {
   const { user } = useAuth();
+<<<<<<< HEAD
   const { theme, toggleTheme } = useTheme();
+=======
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
   const isHROrAdmin = user?.role === 'hr' || user?.role === 'admin';
 
   const pendingLeaves = mockLeaveRequests.filter(l => l.status === 'pending');
@@ -24,6 +34,7 @@ export default function Dashboard() {
         description={isHROrAdmin 
           ? 'HR Dashboard - Manage employees, attendance, and approvals' 
           : 'Employee Dashboard - View your attendance, leave, and payroll'}
+<<<<<<< HEAD
         actions={
           <Button
             variant="outline"
@@ -38,6 +49,8 @@ export default function Dashboard() {
             )}
           </Button>
         }
+=======
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
       />
 
       {/* Stats Grid */}

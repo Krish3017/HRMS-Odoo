@@ -8,7 +8,11 @@ import {
   BarChart3, 
   Settings, 
   LogOut,
+<<<<<<< HEAD
   Building2
+=======
+  Workflow
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -30,12 +34,24 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-60 bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
+<<<<<<< HEAD
       <div className="flex h-16 items-center gap-2 px-4 border-b border-sidebar-border">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-primary">
           <Building2 className="h-5 w-5 text-sidebar-primary-foreground" />
         </div>
         <div>
           <h1 className="text-lg font-semibold text-sidebar-foreground">Dayflow</h1>
+=======
+      <div className="flex h-16 items-center gap-3 px-4 border-b border-sidebar-border">
+        <div className="relative">
+          <div className="absolute inset-0 bg-sidebar-primary/20 rounded-lg blur-sm"></div>
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 shadow-md">
+            <Workflow className="h-5 w-5 text-sidebar-primary-foreground" strokeWidth={2.5} />
+          </div>
+        </div>
+        <div>
+          <h1 className="text-lg font-bold text-sidebar-foreground">WorkSphere</h1>
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
           <p className="text-xs text-sidebar-muted">HR Management</p>
         </div>
       </div>
