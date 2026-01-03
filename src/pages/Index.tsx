@@ -20,7 +20,11 @@ const Index = () => {
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+<<<<<<< HEAD
         <p className="mt-4 text-muted-foreground">Loading Dayflow...</p>
+=======
+        <p className="mt-4 text-muted-foreground">Loading WorkSphere...</p>
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
       </div>
     </div>
   );

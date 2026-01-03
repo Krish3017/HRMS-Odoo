@@ -4,7 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+<<<<<<< HEAD
 import { ThemeProvider } from "@/contexts/ThemeContext";
+=======
+import { ThemeProvider } from "next-themes";
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
 
 // Pages
 import Index from "./pages/Index";
@@ -62,8 +66,13 @@ function AuthRoute({ children }: { children: React.ReactNode }) {
 }
 
 const App = () => (
+<<<<<<< HEAD
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
+=======
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <QueryClientProvider client={queryClient}>
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
       <AuthProvider>
         <TooltipProvider>
           <Toaster />
@@ -90,8 +99,13 @@ const App = () => (
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
+<<<<<<< HEAD
     </ThemeProvider>
   </QueryClientProvider>
+=======
+    </QueryClientProvider>
+  </ThemeProvider>
+>>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
 );
 
 export default App;
