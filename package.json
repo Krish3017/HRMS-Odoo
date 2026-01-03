@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "dayflow-hr-suite",
-=======
-  "name": "vite_react_shadcn_ts",
->>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -49,10 +45,6 @@
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
-<<<<<<< HEAD
-=======
-    "framer-motion": "^12.23.26",
->>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
@@ -61,11 +53,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.61.1",
     "react-resizable-panels": "^2.1.9",
-<<<<<<< HEAD
     "react-router-dom": "^6.30.1",
-=======
-    "react-router-dom": "^6.30.2",
->>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
     "recharts": "^2.15.4",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.0",
@@ -85,10 +73,6 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
-<<<<<<< HEAD
-=======
-    "lovable-tagger": "^1.1.13",
->>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
