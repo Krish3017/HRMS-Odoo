@@ -1,15 +1,17 @@
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { ERPLayout } from '@/components/layout/ERPLayout';
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatCard } from '@/components/common/StatCard';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { mockDashboardStats, mockAttendance, mockLeaveRequests } from '@/data/mockData';
-import { Users, UserCheck, CalendarDays, ClipboardList, Clock, LogIn, LogOut, FileText } from 'lucide-react';
+import { Users, UserCheck, CalendarDays, ClipboardList, Clock, LogIn, LogOut, FileText, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const isHROrAdmin = user?.role === 'hr' || user?.role === 'admin';
 
   const pendingLeaves = mockLeaveRequests.filter(l => l.status === 'pending');
@@ -22,6 +24,20 @@ export default function Dashboard() {
         description={isHROrAdmin 
           ? 'HR Dashboard - Manage employees, attendance, and approvals' 
           : 'Employee Dashboard - View your attendance, leave, and payroll'}
+        actions={
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </Button>
+        }
       />
 
       {/* Stats Grid */}
