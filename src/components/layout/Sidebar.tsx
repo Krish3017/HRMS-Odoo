@@ -30,13 +30,17 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-60 bg-sidebar border-r border-sidebar-border">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2 px-4 border-b border-sidebar-border">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-primary">
-          <Building2 className="h-5 w-5 text-sidebar-primary-foreground" />
+      <div className="flex h-16 items-center gap-3 px-4 border-b border-sidebar-border">
+        <div className="relative flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-sidebar-primary to-sidebar-primary/80 shadow-lg">
+          <svg className="h-6 w-6 text-sidebar-primary-foreground" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="currentColor" fillOpacity="0.1"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
         <div>
-          <h1 className="text-lg font-semibold text-sidebar-foreground">Dayflow</h1>
-          <p className="text-xs text-sidebar-muted">HR Management</p>
+          <h1 className="text-lg font-bold text-sidebar-foreground tracking-tight">Dayflow</h1>
+          <p className="text-xs text-sidebar-muted font-medium">HR Suite</p>
         </div>
       </div>
 

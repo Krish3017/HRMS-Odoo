@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E40AF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="56" fill="url(#logoGradient)" opacity="0.1"/>
+  
+  <!-- Main Icon - Building with People -->
+  <g transform="translate(30, 25)">
+    <!-- Building Base -->
+    <rect x="20" y="35" width="40" height="40" rx="2" fill="url(#logoGradient)"/>
+    <rect x="22" y="37" width="36" height="36" rx="1" fill="white" opacity="0.9"/>
+    
+    <!-- Windows -->
+    <rect x="26" y="42" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <rect x="36" y="42" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <rect x="46" y="42" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <rect x="26" y="52" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <rect x="36" y="52" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <rect x="46" y="52" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <rect x="26" y="62" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <rect x="36" y="62" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    <rect x="46" y="62" width="6" height="6" rx="0.5" fill="url(#logoGradient)" opacity="0.6"/>
+    
+    <!-- Door -->
+    <rect x="33" y="65" width="10" height="10" rx="1" fill="url(#logoGradient)"/>
+    
+    <!-- People Icons -->
+    <circle cx="15" cy="50" r="4" fill="url(#logoGradient)"/>
+    <path d="M 11 58 Q 11 54 15 54 Q 19 54 19 58 L 19 62 L 11 62 Z" fill="url(#logoGradient)"/>
+    
+    <circle cx="55" cy="50" r="4" fill="url(#logoGradient)"/>
+    <path d="M 51 58 Q 51 54 55 54 Q 59 54 59 58 L 59 62 L 51 62 Z" fill="url(#logoGradient)"/>
+    
+    <!-- Connection Lines -->
+    <line x1="19" y1="50" x2="24" y2="50" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="56" y1="50" x2="60" y2="50" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>
+

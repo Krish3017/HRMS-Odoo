@@ -130,14 +130,29 @@ export default function Login() {
             </Link>
           </div>
 
-          {/* Demo credentials */}
-          <div className="mt-8 p-4 rounded-md bg-muted/50 border border-border">
-            <p className="text-sm font-medium text-foreground mb-2">Demo Credentials</p>
-            <div className="space-y-1 text-xs text-muted-foreground">
-              <p><span className="font-medium">Admin:</span> admin@dayflow.com</p>
-              <p><span className="font-medium">HR:</span> hr@dayflow.com</p>
-              <p><span className="font-medium">Employee:</span> employee@dayflow.com</p>
-              <p><span className="font-medium">Password:</span> demo123</p>
+          {/* System Access Information */}
+          <div className="mt-8 p-4 rounded-lg bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20">
+            <p className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+              System Access
+            </p>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center py-1 border-b border-border/50">
+                <span className="font-medium text-muted-foreground">Administrator</span>
+                <span className="font-mono text-foreground">admin@dayflow.com</span>
+              </div>
+              <div className="flex justify-between items-center py-1 border-b border-border/50">
+                <span className="font-medium text-muted-foreground">HR Manager</span>
+                <span className="font-mono text-foreground">hr@dayflow.com</span>
+              </div>
+              <div className="flex justify-between items-center py-1">
+                <span className="font-medium text-muted-foreground">Employee</span>
+                <span className="font-mono text-foreground">employee@dayflow.com</span>
+              </div>
+              <div className="mt-2 pt-2 border-t border-border/50">
+                <span className="text-muted-foreground">Default password: </span>
+                <span className="font-mono font-semibold text-foreground">demo123</span>
+              </div>
             </div>
           </div>
         </div>

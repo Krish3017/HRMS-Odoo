@@ -46,8 +46,8 @@ export function AuthPage({
 			: 'Register to get started';
 
 	const defaultTestimonial = {
-		quote: 'Streamlined workflow for modern teams.',
-		author: '~ HR Manager',
+		quote: 'Empowering organizations with intelligent HR solutions.',
+		author: '~ Enterprise HR Director',
 	};
 
 	const defaultFeatures =
@@ -77,7 +77,7 @@ export function AuthPage({
 								<Workflow className="h-8 w-8 text-primary-foreground" strokeWidth={2.5} />
 							</div>
 						</div>
-						<h1 className="text-5xl font-bold text-foreground tracking-tight">WorkSphere</h1>
+						<h1 className="text-5xl font-bold text-foreground tracking-tight">Dayflow</h1>
 					</div>
 
 					{/* Testimonial */}
@@ -158,7 +158,7 @@ export function AuthPage({
 							</div>
 						</div>
 						<p className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-							WorkSphere
+							Dayflow
 						</p>
 					</div>
 
