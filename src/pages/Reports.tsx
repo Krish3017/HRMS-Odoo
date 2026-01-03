@@ -102,27 +102,29 @@ const attendanceByDepartment = [
   { department: 'Operations', present: 6, absent: 1, leave: 0 },
 ];
 
+// Note: radialData is currently unused but kept for potential future use
+// Colors will be set dynamically based on theme in the component
 const radialData = [
-  { name: 'Attendance', value: 93, fill: 'hsl(142, 76%, 36%)' },
-  { name: 'Productivity', value: 88, fill: 'hsl(221, 83%, 53%)' },
-  { name: 'Satisfaction', value: 87, fill: 'hsl(217, 91%, 60%)' },
+  { name: 'Attendance', value: 93, fill: '#2563EB' }, // Will be overridden with theme colors
+  { name: 'Productivity', value: 88, fill: '#818CF8' },
+  { name: 'Satisfaction', value: 87, fill: '#60A5FA' },
 ];
 
 export default function Reports() {
   const { theme } = useTheme();
   
-  // Professional color scheme that adapts to theme
+  // Modern, accessible color scheme that adapts to theme
   const getChartColors = () => {
     const isDark = theme === 'dark';
     return {
-      present: isDark ? '#4ade80' : '#22c55e',      // Green
-      absent: isDark ? '#f87171' : '#ef4444',       // Red
-      leave: isDark ? '#60a5fa' : '#3b82f6',        // Blue
-      late: isDark ? '#fbbf24' : '#f59e0b',         // Amber
-      primary: isDark ? '#818cf8' : '#6366f1',      // Indigo
-      secondary: isDark ? '#a78bfa' : '#8b5cf6',    // Purple
-      accent: isDark ? '#34d399' : '#10b981',       // Emerald
-      warning: isDark ? '#fb923c' : '#f97316',      // Orange
+      present: isDark ? '#60A5FA' : '#2563EB',      // Blue (Primary - Present/Active/Attendance)
+      absent: isDark ? '#F87171' : '#EF4444',       // Red
+      leave: isDark ? '#FBBF24' : '#F59E0B',        // Amber/Orange
+      late: isDark ? '#A78BFA' : '#8B5CF6',         // Purple
+      primary: isDark ? '#60A5FA' : '#2563EB',      // Blue (Primary)
+      secondary: isDark ? '#A78BFA' : '#8B5CF6',    // Purple
+      accent: isDark ? '#60A5FA' : '#2563EB',       // Blue (Accent)
+      warning: isDark ? '#FBBF24' : '#F59E0B',      // Amber/Orange
     };
   };
 
@@ -283,7 +285,7 @@ export default function Reports() {
 
         {/* Attendance Tab */}
         <TabsContent value="attendance" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Custom Shape Bar Chart - Weekly Attendance */}
             <Card className="shadow-sm">
               <CardHeader>
@@ -444,13 +446,13 @@ export default function Reports() {
 
             {/* Custom Shape Bar Chart - Attendance by Department */}
             <Card className="shadow-sm">
-              <CardHeader>
+          <CardHeader>
                 <CardTitle className="text-lg font-semibold">Attendance by Department</CardTitle>
                 <CardDescription>Today's attendance breakdown by department</CardDescription>
-              </CardHeader>
-              <CardContent>
+          </CardHeader>
+          <CardContent>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={attendanceByDepartment} layout="vertical" margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.2} />
                       <XAxis 
@@ -465,10 +467,10 @@ export default function Reports() {
                         stroke="hsl(var(--border))"
                         width={100}
                       />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
                           borderRadius: '0.5rem',
                           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                         }}
@@ -525,11 +527,11 @@ export default function Reports() {
                           );
                         }}
                       />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
 
             {/* Simple Radar Chart - Department Performance */}
             <Card className="shadow-sm">
@@ -596,68 +598,68 @@ export default function Reports() {
         <TabsContent value="leave" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Leave Type Distribution */}
-            <Card>
-              <CardHeader>
+        <Card>
+          <CardHeader>
                 <CardTitle className="text-lg font-semibold">Leave Type Distribution</CardTitle>
                 <CardDescription>Breakdown of leave types used this year</CardDescription>
-              </CardHeader>
-              <CardContent>
+          </CardHeader>
+          <CardContent>
                 <div className="h-80 flex items-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={leaveDistribution}
-                        cx="50%"
-                        cy="50%"
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={leaveDistribution}
+                    cx="50%"
+                    cy="50%"
                         innerRadius={70}
                         outerRadius={110}
                         paddingAngle={3}
-                        dataKey="value"
-                      >
-                        {leaveDistribution.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
+                    dataKey="value"
+                  >
+                    {leaveDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
                           borderRadius: '0.5rem',
                           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                        }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
                   <div className="space-y-4 min-w-40 ml-6">
-                    {leaveDistribution.map((item) => (
+                {leaveDistribution.map((item) => (
                       <div key={item.name} className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <div 
-                            className="h-3 w-3 rounded-full" 
-                            style={{ backgroundColor: item.color }}
-                          />
+                    <div 
+                      className="h-3 w-3 rounded-full" 
+                      style={{ backgroundColor: item.color }}
+                    />
                           <span className="text-sm font-medium text-foreground">{item.name}</span>
-                          <span className="text-sm text-muted-foreground ml-auto">{item.value}%</span>
+                    <span className="text-sm text-muted-foreground ml-auto">{item.value}%</span>
                         </div>
                         <div className="text-xs text-muted-foreground pl-5">
                           {item.used} / {item.total} days
                         </div>
-                      </div>
-                    ))}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
             {/* Line Chart with X-axis Padding - Leave Request Trend */}
             <Card className="shadow-sm">
-              <CardHeader>
+          <CardHeader>
                 <CardTitle className="text-lg font-semibold">Leave Request Trend</CardTitle>
                 <CardDescription>Monthly leave request statistics with trend analysis</CardDescription>
-              </CardHeader>
-              <CardContent>
+          </CardHeader>
+          <CardContent>
                 <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={leaveTrendData} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
                       <defs>
                         <linearGradient id="colorApprovedGrad" x1="0" y1="0" x2="0" y2="1">
@@ -680,14 +682,14 @@ export default function Reports() {
                         stroke="hsl(var(--border))"
                         padding={{ left: 30, right: 30 }}
                       />
-                      <YAxis 
+                  <YAxis 
                         tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                         stroke="hsl(var(--border))"
-                      />
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
                           borderRadius: '0.5rem',
                           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                         }}
@@ -734,22 +736,22 @@ export default function Reports() {
                         stroke={COLORS.late} 
                         fill="url(#colorPendingGrad)" 
                         name="Pending"
-                      />
-                      <Line 
-                        type="monotone" 
+                  />
+                  <Line 
+                    type="monotone" 
                         dataKey="pending" 
                         stroke={COLORS.late} 
                         strokeWidth={3}
                         dot={{ fill: COLORS.late, r: 5, strokeWidth: 2, stroke: 'hsl(var(--card))' }}
                         activeDot={{ r: 7 }}
                         name="Pending"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
         </TabsContent>
 
         {/* Payroll Tab - Line Bar Area Composed Chart */}

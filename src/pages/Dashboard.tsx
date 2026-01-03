@@ -40,18 +40,18 @@ export default function Dashboard() {
   const pendingLeaves = mockLeaveRequests.filter(l => l.status === 'pending');
   const todayAttendance = mockAttendance.find(a => a.employeeId === user?.employeeId);
 
-  // Professional color scheme that works in both light and dark modes
+  // Modern, accessible color scheme that works in both light and dark modes
   const getChartColors = () => {
     const isDark = theme === 'dark';
     return {
-      present: isDark ? '#4ade80' : '#22c55e',      // Green
-      absent: isDark ? '#f87171' : '#ef4444',       // Red
-      leave: isDark ? '#60a5fa' : '#3b82f6',        // Blue
-      late: isDark ? '#fbbf24' : '#f59e0b',         // Amber
-      primary: isDark ? '#818cf8' : '#6366f1',      // Indigo
-      secondary: isDark ? '#a78bfa' : '#8b5cf6',    // Purple
-      accent: isDark ? '#34d399' : '#10b981',       // Emerald
-      warning: isDark ? '#fb923c' : '#f97316',      // Orange
+      present: isDark ? '#60A5FA' : '#2563EB',      // Blue (Primary - Present/Active/Attendance)
+      absent: isDark ? '#F87171' : '#EF4444',       // Red
+      leave: isDark ? '#FBBF24' : '#F59E0B',        // Amber/Orange
+      late: isDark ? '#A78BFA' : '#8B5CF6',         // Purple
+      primary: isDark ? '#60A5FA' : '#2563EB',      // Blue (Primary)
+      secondary: isDark ? '#A78BFA' : '#8B5CF6',    // Purple
+      accent: isDark ? '#60A5FA' : '#2563EB',       // Blue (Accent)
+      warning: isDark ? '#FBBF24' : '#F59E0B',      // Amber/Orange
     };
   };
 

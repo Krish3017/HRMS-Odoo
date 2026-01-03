@@ -58,16 +58,16 @@
     --sidebar-muted: 215 16% 60%;
 
     /* Status colors - Attendance/Leave */
-    --status-present: 142 76% 36%;
-    --status-present-bg: 142 76% 95%;
-    --status-absent: 0 84% 60%;
+    --status-present: 217 91% 57%; /* Blue #2563EB - Present/Active/Attendance */
+    --status-present-bg: 217 91% 95%;
+    --status-absent: 0 84% 60%; /* Red #EF4444 */
     --status-absent-bg: 0 84% 97%;
     --status-half-day: 45 93% 47%;
     --status-half-day-bg: 45 93% 95%;
-    --status-leave: 217 91% 60%;
-    --status-leave-bg: 217 91% 97%;
+    --status-leave: 38 92% 50%; /* Amber #F59E0B */
+    --status-leave-bg: 38 92% 97%;
     --status-pending: 45 93% 47%;
-    --status-approved: 142 76% 36%;
+    --status-approved: 217 91% 57%; /* Blue #2563EB */
     --status-rejected: 0 84% 60%;
 
     /* Topbar */
@@ -115,16 +115,16 @@
     --sidebar-muted: 215 16% 60%;
 
     /* Status colors - Attendance/Leave */
-    --status-present: 142 76% 50%;
-    --status-present-bg: 142 76% 20%;
+    --status-present: 217 96% 70%; /* Blue #60A5FA - Present/Active/Attendance */
+    --status-present-bg: 217 96% 20%;
     --status-absent: 0 62% 50%;
     --status-absent-bg: 0 62% 20%;
     --status-half-day: 45 93% 50%;
     --status-half-day-bg: 45 93% 20%;
-    --status-leave: 217 91% 60%;
-    --status-leave-bg: 217 91% 20%;
+    --status-leave: 38 96% 65%; /* Amber #FBBF24 */
+    --status-leave-bg: 38 96% 20%;
     --status-pending: 45 93% 50%;
-    --status-approved: 142 76% 50%;
+    --status-approved: 217 96% 70%; /* Blue #60A5FA */
     --status-rejected: 0 62% 50%;
 
     /* Topbar */
