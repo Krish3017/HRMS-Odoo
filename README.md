@@ -1,77 +1,117 @@
-<<<<<<< HEAD
+# Dayflow HR Suite
 
-=======
-# Welcome to your Lovable project
+Enterprise Human Resource Management System built with modern web technologies.
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Dayflow HR Suite is a comprehensive HR management platform designed for enterprises. It provides modules for employee management, attendance tracking, leave management, payroll processing, and reporting.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Employee Management**: Complete employee profiles and directory
+- **Attendance Tracking**: Real-time attendance monitoring and reporting
+- **Leave Management**: Leave requests, approvals, and balance tracking
+- **Payroll Processing**: Salary management and payslip generation
+- **Reports & Analytics**: Comprehensive HR reports and insights
+- **Role-Based Access Control**: Admin, HR, and Employee roles
+- **Dark Mode Support**: Light and dark theme switching
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
+## Technologies Used
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Vite** - Fast build tool and dev server
+- **TypeScript** - Type-safe JavaScript
+- **React 18** - Modern React with hooks
+- **React Router** - Client-side routing
+- **shadcn/ui** - Beautiful UI components
+- **Tailwind CSS** - Utility-first CSS framework
+- **TanStack Query** - Data fetching and caching
+- **Lucide React** - Icon library
 
-## How can I deploy this project?
+## Getting Started
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Prerequisites
 
-## Can I connect a custom domain to my Lovable project?
+- Node.js (v18 or higher) - [Install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- npm or yarn package manager
 
-Yes, you can!
+### Installation
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```sh
+# Step 1: Navigate to the project directory
+cd dayflow-hr-suite
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
->>>>>>> 6af5d5313fb8af80786c9682aa36b8b43a7c60ad
+# Step 2: Install dependencies
+npm install
+
+# Step 3: Start the development server
+npm run dev
+```
+
+The application will be available at `http://localhost:8080` (or the next available port).
+
+### Demo Credentials
+
+You can use these credentials to test the application:
+
+- **Admin**: `admin@dayflow.com` / `demo123`
+- **HR Manager**: `hr@dayflow.com` / `demo123`
+- **Employee**: `employee@dayflow.com` / `demo123`
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run build:dev` - Build for development
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## Project Structure
+
+```
+dayflow-hr-suite/
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── contexts/       # React contexts (Auth, Theme)
+│   ├── data/          # Mock data
+│   ├── hooks/         # Custom React hooks
+│   ├── lib/           # Utility functions
+│   ├── pages/         # Page components
+│   └── types/         # TypeScript type definitions
+├── public/            # Static assets
+└── index.html         # HTML entry point
+```
+
+## Development
+
+### Working Locally
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start dev server: `npm run dev`
+4. Open `http://localhost:8080` in your browser
+
+### Building for Production
+
+```sh
+npm run build
+```
+
+The production build will be in the `dist/` directory.
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Test thoroughly
+4. Submit a pull request
+
+## License
+
+This project is proprietary software. All rights reserved.
+
+## Support
+
+For issues and questions, please contact the development team.
